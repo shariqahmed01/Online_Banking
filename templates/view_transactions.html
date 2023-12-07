@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... head elements ... -->
+    <title>View Transactions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1><a href="{{url_for('admin_dashboard')}}">Admin Console</a></h1>
+    <h1>Welcome, {{ username }}!</h1>
+    <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
+    </header>
+
+    <main>
+        <h2>Transaction Logs</h2>
+        <table>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Account ID</th>
+                <th>Account Name</th> <!-- New Column for Account Name -->
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction._id }}</td>
+                <td>{{ transaction.accountId }}</td>
+                <td>{{ transaction.accountName }}</td> <!-- Display Account Name -->
+                <td>{{ transaction.type }}</td>
+                <td>$ {{ transaction.amount }}</td>
+                <td>{{ transaction.dateTime }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </main>
+
+    <!-- ... footer ... -->
+</body>
+</html>

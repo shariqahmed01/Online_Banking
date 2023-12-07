@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... head elements ... -->
+    <title>Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- ... header ... -->
+
+    <main>
+        <h2>Payment</h2>
+        <form action="{{ url_for('process_payment') }}" method="post">
+            <label for="debitCardNumber">Debit Card Number:</label>
+            <input type="text" id="debitCardNumber" name="debitCardNumber" required><br><br>
+
+            <p>Amount to pay: $<span id="amount-to-pay">{{ price }}</span></p>
+    <input type="hidden" id="amount" name="amount" value="{{ price }}">
+
+            <button type="submit" class="buy-now">Pay Now</button>
+        </form>
+    </main>
+
+    <!-- ... footer ... -->
+</body>
+</html>

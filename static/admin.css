@@ -1,0 +1,112 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+
+
+header h1 {
+    margin: 0;
+}
+
+/* Navigation and Actions */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav a, .admin-actions a {
+    color: black;
+    text-decoration: none;
+}
+
+nav a:hover, .admin-actions a:hover {
+    text-decoration: underline;
+}
+
+/* Admin Actions Section */
+.admin-actions {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.admin-actions h2 {
+    color: #333;
+}
+
+.admin-actions ul {
+    padding-left: 20px;
+    list-style-type: disclosure-closed;
+}
+
+.admin-actions li {
+    margin-bottom: 10px;
+}
+
+/* Admin Summary Section */
+.admin-summary {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-item h3 {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Reports Section */
+.reports {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.reports h2 {
+    color: #333;
+}
+
+/* Logout Button */
+#logout {
+    background-color: #f44336;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#logout:hover {
+    background-color: #d32f2f;
+}
+
+main{
+    margin: 20px;
+}

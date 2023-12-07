@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... head elements ... -->
+    <title>Approve User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- ... header ... -->
+
+    <main>
+        <h2>Approve User: {{ user.username }}</h2>
+        <form method="POST" action="{{ url_for('approve_user', user_id=user._id) }}">
+            <!-- Display user details in a non-editable way (you may use <p> or <span> tags) -->
+            <p>Username: {{ user.username }}</p>
+            <p>Name: {{ user.name }}</p>
+            <p>Address: {{ user.address }}</p>
+            <p>Contact: {{ user.contact }}</p>
+            <p>SSN: {{ user.ssn }}</p>
+            <!-- ... other user details ... -->
+
+            <!-- Account Type Selection -->
+            <label for="account_type">Account Type:</label>
+            <select name="account_type" id="account_type">
+                {% for category in account_types %}
+                <option value="{{ category.id }}">{{ category.type }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <button type="submit">Approve Account</button>
+        </form>
+    </main>
+
+    <!-- ... footer ... -->
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1><a href="{{url_for('admin_dashboard')}}">Admin Console</a></h1>
+    <h1>Welcome, {{ username }}!</h1>
+    <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
+    </header>
+
+    <main>
+         <h1>Approve Users</h1><br>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            {% for user in users %}
+<tr>
+    <form method="POST" action="{{ url_for('approve_users') }}">
+        <td>{{ user.username }}</td>
+        <td>{{ user.name or 'N/A' }}</td>
+        <td>
+            <a href="{{ url_for('approve_user', user_id=user._id) }}">View Details</a>
+    </td>
+        </td>
+    </form>
+</tr>
+{% endfor %}
+        </table>
+    </main>
+
+    <footer>
+        <!-- Footer Content -->
+    </footer>
+</body>
+</html>

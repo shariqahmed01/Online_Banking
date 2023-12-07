@@ -1,0 +1,138 @@
+/* Reset some default browser styles */
+body, h1, h2, p, ul, li, table {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color for the entire page */
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+/* Header styles */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+}
+
+header a{
+        text-decoration: none;
+    color: white;
+}
+
+/* Main container styles */
+.container {
+    width: -webkit-fill-available;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Account Summary styles */
+#account-summary {
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+        display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+}
+
+.summary-card h3 {
+    color: #333;
+}
+
+#account-balance {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+#last-transaction {
+    color: #666;
+}
+
+/* Transaction History table styles */
+#transaction-history {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Logout button styles */
+#logout {
+    background-color: #ff5722;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#logout:hover {
+    background-color: #d84315;
+}
+
+
+.sidebar {
+    width: 200px; /* Adjust width as needed */
+    background-color: #333;
+    height: 100vh; /* Full height */
+    padding-top: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.main-content {
+    display: flex;
+    flex-grow: 1;
+
+}
+main{
+    margin: 20px;
+}

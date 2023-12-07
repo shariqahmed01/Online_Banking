@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
+
+</head>
+<body>
+
+<header>
+            <h1>User Dashboard</h1>
+    <h1>Welcome, {{ username }}!</h1>
+    <a href="{{ url_for('logout') }}">
+        <button id="logout">Logout</button>
+    </a>
+</header>
+
+
+<div class="main-content">
+    <nav class="sidebar">
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="{{ url_for('transfer') }}">Make a Transfer</a></li>
+
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section id="account-summary">
+            <h2>Account Summary</h2>
+            <div class="summary-card">
+                <div>
+                    <h3>Account Details</h3>
+                    <p>Name: {{ account_details.name }}</p>
+                    <p>Account Number: {{ account_details.accountNumber }}</p>
+                    <p>Debit Card Number: {{ account_details.debitCardNumber }}</p>
+                    <p>Address: {{ account_details.address }}</p>
+                    <p>SSN: {{ account_details.ssn }}</p>
+                    <p>Account Type: {{ account_details.accountType }}</p>
+                </div>
+                <h3>Account Balance:</h3>
+                <p id="account-balance">${{ account_details.balance }}</p>
+            </div>
+            <div class="summary-card">
+                <h3>Last Transaction</h3>
+                {% if last_transaction %}
+                <p id="last-transaction">
+                    Type: {{ last_transaction.type }}<br>
+                    Amount: $ {{ last_transaction.amount }}<br>
+                    Date: {{ last_transaction.dateTime}}
+                </p>
+                {% else %}
+                <p id="last-transaction">No recent transactions</p>
+                {% endif %}
+            </div>
+
+        </section>
+
+        <section id="transaction-history">
+    <h2>Transaction History</h2>
+    <table>
+        <tr>
+            <th>Date Time</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Sender</th>
+            <th>Receiver</th>
+        </tr>
+        {% for transaction in transactions %}
+        {% if not (transaction.type=='Transfer Debit' and transaction.receiverAccount==account_details.accountNumber) %}
+        <tr>
+            <td>{{ transaction.dateTime }}</td>
+            <td>{{ transaction.type }}</td>
+            <td>${{ transaction.amount }}</td>
+            <td>
+                {% if transaction.senderAccount %}
+                <!-- Display sender's account number or username if available -->
+                {{ transaction.senderAccount }}
+                {% elif transaction.accountId %}
+                <!-- Display sender's account number or username if available -->
+                {{ transaction.accountId }}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if transaction.receiverAccount %}
+                <!-- Display receiver's account number or username if available -->
+                {{ transaction.receiverAccount }}
+                                {% elif transaction.accountId %}
+                <!-- Display sender's account number or username if available -->
+                {{ transaction.accountId }}
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+</section>
+
+    </div>
+</div>
+<script src="dashboard.js"></script> <!-- Link to your JavaScript file for interactivity -->
+</body>
+</html>

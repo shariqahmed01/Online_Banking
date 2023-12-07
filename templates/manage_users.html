@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... head elements ... -->
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1><a href="{{url_for('admin_dashboard')}}">Admin Console</a></h1>
+    <h1>Welcome, {{ username }}!</h1>
+    <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
+    </header>
+
+<main>
+    <h2>Manage Users</h2>
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.name or 'N/A' }}</td>
+            <td>
+                <a href="{{ url_for('edit_user', user_id=user._id) }}">Edit</a> |
+                <a href="{{ url_for('delete_user', user_id=user._id) }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</main>
+
+<!-- ... footer ... -->
+</body>
+</html>

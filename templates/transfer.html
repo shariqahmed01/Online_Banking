@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href= "{{ url_for('static',filename='styles.css') }}">
+
+</head>
+<body>
+
+    <header>
+                    <h1>User Dashboard</h1>
+    <h1>Welcome, {{ username }}!</h1>
+    <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
+</header>
+
+
+<div class="main-content">
+     <nav class="sidebar">
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="{{ url_for('transfer') }}">Make a Transfer</a></li>
+
+        </ul>
+    </nav>
+    <div class="container">
+    <h1>Money Transfer</h1>
+    <form method="POST" action="/transfer">
+        <label for="sender_account">Sender Account Number:</label>
+        <input type="text" id="sender_account" name="sender_account" value="{{ user_account_number }}" required readonly><br>
+        <p>Available Balance: {{ balance }}</p>
+<br>
+        <label for="receiver_account">Receiver Account Number:</label>
+        <input type="text" id="receiver_account" name="receiver_account" required><br><br>
+
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" id="amount" name="amount" required><br><br>
+
+        <button type="submit">Transfer</button>
+    </form>
+    </div>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <script>
+          window.onload = function() {
+            {% for category, message in messages %}
+              alert("{{ message }}");  // Display the message in a popup
+            {% endfor %}
+          };
+        </script>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>
