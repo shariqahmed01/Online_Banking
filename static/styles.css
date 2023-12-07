@@ -12,7 +12,7 @@ body {
 
 /* Header styles */
 header {
-    background-color: #333;
+    background-color: #1F1717;
     color: #fff;
     padding: 20px;
     display: flex;
@@ -43,7 +43,7 @@ header a{
 }
 
 .summary-card {
-    background-color: #f9f9f9;
+    background-color: #FCF5ED;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -85,14 +85,14 @@ table th, table td {
 }
 
 table th {
-    background-color: #f2f2f2;
+    background-color: #F4BF96;
     font-weight: bold;
     color: #333;
 }
 
 /* Logout button styles */
 #logout {
-    background-color: #ff5722;
+    background-color: #CE5A67;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -108,7 +108,7 @@ table th {
 
 .sidebar {
     width: 200px; /* Adjust width as needed */
-    background-color: #333;
+    background-color: #1F1717;
     height: 100vh; /* Full height */
     padding-top: 20px;
 }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href= "{{ url_for('static',filename='styles.css') }}">
+    <link rel="stylesheet" href= "{{ url_for('static',filename='test.css') }}">
 
 </head>
 <body>
@@ -22,11 +23,17 @@
         </ul>
     </nav>
     <div class="container">
-    <h1>Money Transfer</h1>
+    <div class="image-section">
+        <!-- Image goes here, you can use an img tag or set it as a background image in CSS -->
+    </div>
+    <div class="form-section">
+                        <h1>Money Transfer</h1>
+    <div class="container">
     <form method="POST" action="/transfer">
+
         <label for="sender_account">Sender Account Number:</label>
         <input type="text" id="sender_account" name="sender_account" value="{{ user_account_number }}" required readonly><br>
-        <p>Available Balance: {{ balance }}</p>
+        <p style="color: #CE5A67">Available Balance: {{ balance }}</p>
 <br>
         <label for="receiver_account">Receiver Account Number:</label>
         <input type="text" id="receiver_account" name="receiver_account" required><br><br>
@@ -37,6 +44,8 @@
         <button type="submit">Transfer</button>
     </form>
     </div>
+        </div>
+</div>
 </div>
 {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}

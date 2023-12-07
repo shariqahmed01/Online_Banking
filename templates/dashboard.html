@@ -32,6 +32,13 @@
             <h2>Account Summary</h2>
             <div class="summary-card">
                 <div>
+                    <img src="{{ url_for('static', filename='profile.gif') }}" style="
+    height: 100px;
+    border-radius: 20px;
+    margin-right: 20px;
+">
+                </div>
+                <div>
                     <h3>Account Details</h3>
                     <p>Name: {{ account_details.name }}</p>
                     <p>Account Number: {{ account_details.accountNumber }}</p>

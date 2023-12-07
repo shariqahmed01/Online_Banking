@@ -7,7 +7,7 @@ body {
 }
 
 header {
-    background-color: #333;
+    background-color: #1F1717;
     color: white;
     text-align: center;
     padding: 10px 0;
@@ -43,10 +43,15 @@ nav a:hover, .admin-actions a:hover {
 
 /* Admin Actions Section */
 .admin-actions {
-    background-color: #fff;
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    border-style: dotted;
+    border-color: #F4BF96;
+    background-color: #FCF5ED;
     padding: 20px;
     margin: 20px;
     border-radius: 5px;
+        align-items: center;
 }
 
 .admin-actions h2 {
