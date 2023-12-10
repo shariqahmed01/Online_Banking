@@ -14,7 +14,17 @@
     <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
 
     </header>
+<nav class="nav-admin">
+        <ul>
+                <li><a href="{{ url_for('manage_users') }}">Manage Users</a></li>
+                <li><a href="{{ url_for('view_transactions') }}">View Transactions</a></li>
+                <li><a class="active" href="{{ url_for('add_user') }}">Add Bank Officer or Admin</a></li>
+                <li><a href="{{ url_for('deposit_money') }}">Deposit Money</a></li> <!-- New link for depositing money -->
+                <li><a href="{{ url_for('approve_users') }}">Approve Customers</a></li>
 
+                <!-- Add more admin-specific actions as needed -->
+            </ul>
+    </nav>
     <main>
                 <h1>Add New User</h1>
     <br>

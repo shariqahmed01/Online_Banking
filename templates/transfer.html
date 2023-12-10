@@ -36,7 +36,9 @@
         <p style="color: #CE5A67">Available Balance: {{ balance }}</p>
 <br>
         <label for="receiver_account">Receiver Account Number:</label>
-        <input type="text" id="receiver_account" name="receiver_account" required><br><br>
+<input type="text" id="receiver_account" name="receiver_account" required>
+<span id="account_name_display" style="color: #CE5A67;"></span><br><br>
+
 
         <label for="amount">Amount:</label>
         <input type="number" step="0.01" id="amount" name="amount" required><br><br>
@@ -47,6 +49,32 @@
         </div>
 </div>
 </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var receiverAccountInput = document.getElementById('receiver_account');
+        var accountNameDisplay = document.getElementById('account_name_display'); // You will need to add this element to your HTML
+
+        receiverAccountInput.addEventListener('blur', function() {
+            var accountNumber = this.value;
+            fetch('/get_account_name', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'account_number=' + accountNumber
+            })
+            .then(response => response.json())
+            .then(data => {
+                accountNameDisplay.textContent = "Name: "+data.name; // Update the display with the account name
+                accountNameDisplay.style.color = data.name ? "#CE5A67" : "";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <script>

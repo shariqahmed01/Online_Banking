@@ -8,29 +8,40 @@
 <body>
     <header>
         <h1><a href="{{url_for('admin_dashboard')}}">Admin Console</a></h1>
-    <h1>Welcome, {{ username }}!</h1>
-    <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
+        <h1>Welcome, {{ username }}!</h1>
+        <a href="{{ url_for('logout') }}"><button id="logout">Logout</button></a>
     </header>
-
+    <nav class="nav-admin">
+        <ul>
+            <li><a href="{{ url_for('manage_users') }}">Manage Users</a></li>
+            <li><a class="active" href="{{ url_for('view_transactions') }}">View Transactions</a></li>
+            <li><a href="{{ url_for('add_user') }}">Add Bank Officer or Admin</a></li>
+            <li><a href="{{ url_for('deposit_money') }}">Deposit Money</a></li>
+            <li><a href="{{ url_for('approve_users') }}">Approve Customers</a></li>
+            <!-- Add more admin-specific actions as needed -->
+        </ul>
+    </nav>
     <main>
         <h2>Transaction Logs</h2>
         <table>
             <tr>
                 <th>Transaction ID</th>
                 <th>Account ID</th>
-                <th>Account Name</th> <!-- New Column for Account Name -->
-                <th>Type</th>
-                <th>Amount</th>
+                <th>Account Name</th>
+                <th>Details</th>
+                <th>Credit</th>
+                <th>Debit</th>
                 <th>Date</th>
             </tr>
             {% for transaction in transactions %}
             <tr>
                 <td>{{ transaction._id }}</td>
                 <td>{{ transaction.accountId }}</td>
-                <td>{{ transaction.accountName }}</td> <!-- Display Account Name -->
+                <td>{{ transaction.accountName }}</td>
                 <td>{{ transaction.type }}</td>
-                <td>$ {{ transaction.amount }}</td>
-                <td>{{ transaction.dateTime }}</td>
+                <td>{% if transaction.amount > 0 %}$ {{ transaction.amount }}{% else %} - {% endif %}</td>
+                <td>{% if transaction.amount < 0 %}$ {{ -transaction.amount }}{% else %} - {% endif %}</td>
+                <td>{{ transaction.formattedDate }}</td>
             </tr>
             {% endfor %}
         </table>

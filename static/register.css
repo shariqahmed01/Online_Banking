@@ -1,6 +1,4 @@
 body, html {
-    height: 100%;
-    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +16,10 @@ body, html {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="tel"],
+input[type="date"]
+{
     width: 100%;
     padding: 10px;
     margin: 8px 0;
@@ -26,6 +27,18 @@ input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+select{
+
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+
 }
 
 button {

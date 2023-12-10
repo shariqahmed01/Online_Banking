@@ -10,27 +10,55 @@
 <div class="form-container">
     <h1>Registration</h1>
     <form method="POST" action="/register">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname" required placeholder="Enter First Name"><br><br>
+
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname" required placeholder="Enter Last Name"><br><br>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required placeholder="Enter Date of birth"><br><br>
 
         <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required><br><br>
+        <input type="text" id="address" name="address" required placeholder="Enter Address"><br><br>
 
         <label for="contact">Contact:</label>
-        <input type="text" id="contact" name="contact" required><br><br>
+        <input type="tel" id="contact" name="contact" pattern="[0-9]{10}" maxlength="10" title="Contact number should be 10 digits" placeholder="Enter contact number"><br><br>
 
         <label for="ssn">SSN:</label>
-        <input type="text" id="ssn" name="ssn" required><br><br>
+        <input type="text" id="ssn" name="ssn" required placeholder="Enter SSN"><br><br>
+
+        <label for="bank_id">Choose a Bank:</label>
+    <select name="bank_id" id="bank_id">
+        {% for bank in banks %}
+        <option value="{{ bank._id }}">{{ bank.name }}</option>
+        {% endfor %}
+    </select>
 
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+        <input type="text" id="username" name="username" required placeholder="Enter Username"><br><br>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required placeholder="Enter Password"><br><br>
+
+        <label for="cpassword">Confirm Password:</label>
+        <input type="password" id="cpassword" name="cpassword" required placeholder="Re-enter Password"><br><br>
 
         <button type="submit">Register</button>
     </form>
     <p>Already have an account? <a href="/login">Log in</a></p>
 </div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <script>
+          window.onload = function() {
+            {% for category, message in messages %}
+              alert("{{ message }}");  // Display the message in a popup
+            {% endfor %}
+          };
+        </script>
+      {% endif %}
+    {% endwith %}
 </body>
 </html>

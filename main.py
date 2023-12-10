@@ -16,6 +16,8 @@ users_collection = db['customers']
 admin_users_collection = db['admin']
 bank_officers_collection = db['bankofficer']
 transactions_collection = db['transactions']
+accounts_collection = db['accounts']
+banks_collection = db['banks']
 
 
 class User:
@@ -32,22 +34,35 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form.get('name')
+        fname = request.form.get('fname')
+        lname = request.form.get('lname')
+        dob = request.form.get('dob')
         address = request.form.get('address')
         contact = request.form.get('contact')
         ssn = request.form.get('ssn')
         username = request.form.get('username')
         password = request.form.get('password')
+        cpassword = request.form.get('cpassword')
+        bank_id = request.form.get('bank_id')
 
+        # Check if passwords match
+        if password != cpassword:
+            flash('Password and Confirm Password do not match', 'error')
+            return redirect(url_for('register'))
+
+        # Hash the password
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
         user = {
-            "name": name,
+            "fname": fname,
+            "lname": lname,
+            "dob": dob,
             "address": address,
             "contact": contact,
             "ssn": ssn,
             "username": username,
             "password": hashed_password,
-            "isActive": False
+            "isActive": False  # You can set this to True if you want to activate the account immediately
         }
 
         user_inserted = users_collection.insert_one(user)
@@ -61,15 +76,19 @@ def register():
             "accountNumber": account_number,
             "CustomerId": user_inserted.inserted_id,  # MongoDB generated ID
             "balance": 0,
-            "debitCard": debit_card_number
+            "debitCard": debit_card_number,
+            "bankId": ObjectId(bank_id)
         }
 
         # Assuming 'accounts' is your account collection
         db['accounts'].insert_one(account)
 
+        flash('Registration successful', 'success')
         return redirect(url_for('login'))
 
-    return render_template('register.html')
+    banks = list(db['banks'].find({}))
+    return render_template('register.html',banks=banks)
+
 
 
 @app.route('/approve_users')
@@ -84,6 +103,7 @@ def approve_users():
 @app.route('/approve_user/<user_id>', methods=['GET', 'POST'])
 def approve_user(user_id):
     if 'username' in session and session['user_type'] == 'admin':
+        username = session['username']
         user = users_collection.find_one({'_id': ObjectId(user_id)})
 
         if request.method == 'POST':
@@ -94,14 +114,16 @@ def approve_user(user_id):
         # Fetch account types from the category collection along with their IDs
         categories = db['category'].find()
         account_types = [{'id': str(category['_id']), 'type': category['AccountType']} for category in categories]
-
-        return render_template('approve_user.html', user=user, account_types=account_types)
+        account=accounts_collection.find_one({'CustomerId': ObjectId(user_id)})
+        bank = banks_collection.find_one({'_id': ObjectId(account['bankId'])})
+        return render_template('approve_user.html', user=user, account_types=account_types, username=username, bank=bank)
     else:
         return redirect(url_for('login'))
 
 @app.route('/deposit_money', methods=['GET', 'POST'])
 def deposit_money():
     if 'username' in session and session['user_type'] == 'admin':
+        username=session['username']
         if request.method == 'POST':
             account_number = request.form.get('account_number')
             deposit_amount = float(request.form.get('deposit_amount'))
@@ -127,7 +149,7 @@ def deposit_money():
 
             return redirect(url_for('deposit_money'))
 
-        return render_template('deposit_money.html')
+        return render_template('deposit_money.html',username=username)
     else:
         return redirect(url_for('login'))
 
@@ -170,49 +192,66 @@ def login():
 def dashboard():
     if 'username' in session:
         username = session['username']
-        # Fetch user details
         user = users_collection.find_one({'username': username})
 
         if user:
-            # Assuming the customer ID is stored in the user's document
             customer_id = user['_id']
-            print(customer_id)
-            # Fetch account details
-            account = db['accounts'].find_one({'CustomerId': customer_id})
-            transactions = list(db['transactions'].find({
-                '$or': [
-                    {'accountId': account["accountNumber"]},  # Credit transactions
-                    {'receiverAccount': account["accountNumber"]}  # Debit transactions
-                ]
-            }).sort('dateTime', -1))
-            print(transactions)
-            last_transaction = transactions[0] if transactions else None
-            account_type = "Not Available"  # Default if not found
-            if 'accountTypeId' in user:
-                category = db['category'].find_one({'_id': user['accountTypeId']})
-                if category:
-                    account_type = category['AccountType']
 
-            if account:
-                account_details = {
-                    'name': user['name'],
-                    'balance': account['balance'],
-                    'debitCardNumber': account['debitCard'],
-                    'accountNumber': account['accountNumber'],
-                    'address': user['address'],
-                    'ssn': user['ssn'],
-                    'accountType': account_type
-                }
+            # Fetch all accounts associated with the user
+            accounts = list(accounts_collection.find({'CustomerId': customer_id}))
 
-            else:
-                account_balance = 'No account found'
+            # Attach bank details to each account
+            for account in accounts:
+                bank = banks_collection.find_one({'_id': account['bankId']})
+                account['bankName'] = bank['name'] if bank else 'Unknown Bank'
+
+                # Fetch and format transactions for each account
+                transactions = list(transactions_collection.find({
+                    '$or': [
+                        {'accountId': account["accountNumber"]},  # Credit transactions
+                        {'receiverAccount': account["accountNumber"]}  # Debit transactions
+                    ]
+                }).sort('dateTime', -1))
+                last_transaction = transactions[0] if transactions else None
+
+                for transaction in transactions:
+                    if isinstance(transaction['dateTime'], str):
+                        transaction_datetime = datetime.strptime(transaction['dateTime'], "%Y-%m-%d %H:%M:%S")
+                    else:
+                        transaction_datetime = transaction['dateTime']
+
+                    print(transaction)
+                    # Format dateTime to 12-hour format
+                    transaction['dateTime'] = transaction_datetime.strftime('%I:%M %p %d-%m-%Y')
+
+
+
+                account['transactions'] = transactions
+                account['lastTransaction'] = transactions[0] if transactions else None
+                account_type = "Not Available"  # Default if not found
+                if 'accountTypeId' in user:
+                    category = db['category'].find_one({'_id': user['accountTypeId']})
+                    account_type = category['AccountType'] if category else account_type
+
+                if account:
+                    account_details = {
+                        'fname': user['fname'],
+                        'lname': user['lname'],
+                        'balance': account['balance'],
+                        'debitCardNumber': account['debitCard'],
+                        'accountNumber': account['accountNumber'],
+                        'address': user['address'],
+                        'ssn': user['ssn'],
+                        'accountType': account_type
+                    }
+
+            return render_template('dashboard.html', username=username, accounts=accounts, account_details=account_details, transactions=transactions, last_transaction=last_transaction)
+
         else:
             return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
 
-        return render_template('dashboard.html', username=username, account_details=account_details,
-                               transactions=transactions, last_transaction=last_transaction)
-
-    return redirect(url_for('login'))
 
 
 @app.route('/transfer', methods=['GET', 'POST'])
@@ -350,6 +389,7 @@ def process_payment():
         # Record the transaction
         transaction = {
             "accountId": account['accountNumber'],
+            "receiverAccount": "Online Ecommerce",
             "amount": -amount,
             "type": "Debit Card Purchase",
             "dateTime": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -359,6 +399,20 @@ def process_payment():
         return 'Payment successful'
     else:
         return 'Payment failed: Insufficient funds or invalid card number'
+
+
+@app.route('/get_account_name', methods=['POST'])
+def get_account_name():
+    account_number = request.form.get('account_number')
+    account = db['accounts'].find_one({'accountNumber': account_number})
+    if account:
+        customer_id = account['CustomerId']
+        customer = db['customers'].find_one({'_id': customer_id})
+        if customer['fname']:
+            return {'name': customer['fname']}
+        elif customer['name']:
+            return {'name':customer['name']}
+    return {'name': ''}
 
 
 @app.route('/manage_users')
@@ -382,29 +436,34 @@ def edit_user(user_id):
         return 'User not found'
 
     if request.method == 'POST':
-        # Extract data from form
-        updated_username = request.form.get('username')
-        updated_name = request.form.get('name')
+        # Extract data from the form
+        updated_fname = request.form.get('fname')
+        updated_lname = request.form.get('lname')
+        updated_dob = request.form.get('dob')
         updated_address = request.form.get('address')
         updated_contact = request.form.get('contact')
         updated_ssn = request.form.get('ssn')
-        # Update other fields as necessary
+        updated_username = request.form.get('username')
 
-        # Update user in the database
+        # Update user information in the database
         users_collection.update_one(
             {'_id': ObjectId(user_id)},
             {'$set': {
-                'username': updated_username,
-                'name': updated_name,
+                'fname': updated_fname,
+                'lname': updated_lname,
+                'dob': updated_dob,
                 'address': updated_address,
                 'contact': updated_contact,
-                'ssn': updated_ssn
-                # Update other fields
+                'ssn': updated_ssn,
+                'username': updated_username,
+                # Add more fields as needed
             }}
         )
+
         return redirect(url_for('manage_users'))
 
     return render_template('edit_user.html', user=user)
+
 
 
 @app.route('/delete_user/<user_id>', methods=['GET'])
@@ -420,19 +479,29 @@ def delete_user(user_id):
 def view_transactions():
     if 'username' in session and session['user_type'] == 'admin':
         username = session['username']
-        transactions = db['transactions'].find({})
+        transactions = db['transactions'].find({}).sort('dateTime', -1)
 
-        # Enhance transactions with user name
+        # Enhance transactions with user name and separate credit/debit
         enhanced_transactions = []
         for transaction in transactions:
             account = db['accounts'].find_one({'accountNumber': transaction['accountId']})
             if account:
                 user_id = account['CustomerId']
-                print(user_id)
                 user = db['customers'].find_one({'_id': user_id})
-                user_name = user['name'] if user else 'Unknown'
+                first_name = user.get('fname', 'Unknown')
+                last_name = user.get('lname', '')
+                user_name = f"{first_name} {last_name}".strip()
             else:
                 user_name = 'Unknown'
+
+            # Convert dateTime to a datetime object if it's not already
+            if isinstance(transaction['dateTime'], str):
+                transaction_datetime = datetime.strptime(transaction['dateTime'], "%Y-%m-%d %H:%M:%S")
+            else:
+                transaction_datetime = transaction['dateTime']
+
+            # Format dateTime to 12-hour format
+            formatted_date = transaction_datetime.strftime('%I:%M %p %d-%m-%Y')
 
             transaction_data = {
                 '_id': transaction['_id'],
@@ -440,13 +509,14 @@ def view_transactions():
                 'accountName': user_name,  # Add user name
                 'type': transaction['type'],
                 'amount': transaction['amount'],
-                'dateTime': transaction['dateTime']
+                'formattedDate': formatted_date  # Use formatted date
             }
             enhanced_transactions.append(transaction_data)
 
         return render_template('view_transactions.html', transactions=enhanced_transactions, username=username)
     else:
         return redirect(url_for('login'))
+
 
 
 @app.route('/add-user', methods=['GET'])

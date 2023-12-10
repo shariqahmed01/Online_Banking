@@ -38,30 +38,23 @@
     margin-right: 20px;
 ">
                 </div>
-                <div>
+                {% for account in accounts %}
+                <div class="account">
                     <h3>Account Details</h3>
-                    <p>Name: {{ account_details.name }}</p>
+                    <p>First Name: {{ account_details.fname or N/A }}</p>
+                    <p>Last Name: {{ account_details.lname or N/A }}</p>
+                    <h2>Bank: {{ account.bankName }}</h2>
                     <p>Account Number: {{ account_details.accountNumber }}</p>
                     <p>Debit Card Number: {{ account_details.debitCardNumber }}</p>
                     <p>Address: {{ account_details.address }}</p>
                     <p>SSN: {{ account_details.ssn }}</p>
                     <p>Account Type: {{ account_details.accountType }}</p>
                 </div>
+                {% endfor %}
                 <h3>Account Balance:</h3>
                 <p id="account-balance">${{ account_details.balance }}</p>
             </div>
-            <div class="summary-card">
-                <h3>Last Transaction</h3>
-                {% if last_transaction %}
-                <p id="last-transaction">
-                    Type: {{ last_transaction.type }}<br>
-                    Amount: $ {{ last_transaction.amount }}<br>
-                    Date: {{ last_transaction.dateTime}}
-                </p>
-                {% else %}
-                <p id="last-transaction">No recent transactions</p>
-                {% endif %}
-            </div>
+
 
         </section>
 
@@ -71,7 +64,8 @@
         <tr>
             <th>Date Time</th>
             <th>Type</th>
-            <th>Amount</th>
+            <th>Credit</th>
+            <th>Debit</th>
             <th>Sender</th>
             <th>Receiver</th>
         </tr>
@@ -80,7 +74,8 @@
         <tr>
             <td>{{ transaction.dateTime }}</td>
             <td>{{ transaction.type }}</td>
-            <td>${{ transaction.amount }}</td>
+             <td>{% if transaction.amount > 0 %}$ {{ transaction.amount }}{% else %} - {% endif %}</td>
+                <td>{% if transaction.amount < 0 %}$ {{ -transaction.amount }}{% else %} - {% endif %}</td>
             <td>
                 {% if transaction.senderAccount %}
                 <!-- Display sender's account number or username if available -->
